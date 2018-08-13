@@ -24,7 +24,10 @@ def main(screen):
 
     key = curses.KEY_RIGHT
 
+    score = 0
+
     while True:
+        w.addch(0, 0, str(score))
         next_key = w.getch()
         key = key if next_key == -1 else next_key
 
@@ -46,6 +49,8 @@ def main(screen):
         snake.insert(0, new_head)
 
         if snake[0] == food:
+            score += 1
+            w.addch(0, 0, str(score))
             food = None
             while food is None:
                 nf = [
