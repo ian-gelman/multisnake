@@ -11,62 +11,70 @@ def main(screen):
     w.keypad(True)
     w.timeout(100)
 
-    snk_x = sw//4
-    snk_y = sh//2
-    snake = [
-        [snk_y, snk_x],
-        [snk_y, snk_x-1],
-        [snk_y, snk_x-2]
-    ]
-
-    food = [sh//2, sw//2]
-    w.addch(food[0], food[1], curses.ACS_PI)
-
-    key = curses.KEY_RIGHT
-
-    score = 0
-
     while True:
-        try:    
-            w.addch(0, 0, str(score))
-            next_key = w.getch()
-            key = key if next_key == -1 else next_key
+        game_over = False
+        w.clear()
+        
+        snk_x = sw//4
+        snk_y = sh//2
+        snake = [
+            [snk_y, snk_x],
+            [snk_y, snk_x-1],
+            [snk_y, snk_x-2]
+        ]
 
-            if snake[0][0] in [0, sh] or snake[0][1]  in [0, sw] or snake[0] in snake[1:]:
-                curses.endwin()
-                quit()
+        food = [sh//2, sw//2]
+        w.addch(food[0], food[1], curses.ACS_PI)
 
-            new_head = [snake[0][0], snake[0][1]]
+        key = curses.KEY_RIGHT
 
-            if key == curses.KEY_DOWN:
-                new_head[0] += 1
-            if key == curses.KEY_UP:
-                new_head[0] -= 1
-            if key == curses.KEY_LEFT:
-                new_head[1] -= 1
-            if key == curses.KEY_RIGHT:
-                new_head[1] += 1
+        score = 0
 
-            snake.insert(0, new_head)
-
-            if snake[0] == food:
-                score += 1
+        while not game_over:
+            try:    
+                next_key = w.getch()
+                key = key if next_key == -1 else next_key
                 w.addch(0, 0, str(score))
-                food = None
-                while food is None:
-                    nf = [
-                        random.randint(1, sh-1),
-                        random.randint(1, sw-1)
-                    ]
-                    food = nf if nf not in snake else None
-                w.addch(food[0], food[1], curses.ACS_PI)
-            else:
-                tail = snake.pop()
-                w.addch(tail[0], tail[1], ' ')
-            w.addch(snake[0][0], snake[0][1], curses.ACS_CKBOARD)
-        except curses.error:
-            curses.endwin()
-            quit()
+
+                if snake[0][0] in [0, sh] or snake[0][1]  in [0, sw] or snake[0] in snake[1:]:
+                    raise curses.error
+                # quit()
+
+                new_head = [snake[0][0], snake[0][1]]
+
+                if key == curses.KEY_DOWN:
+                    new_head[0] += 1
+                if key == curses.KEY_UP:
+                    new_head[0] -= 1
+                if key == curses.KEY_LEFT:
+                    new_head[1] -= 1
+                if key == curses.KEY_RIGHT:
+                    new_head[1] += 1
+
+                snake.insert(0, new_head)
+
+                if snake[0] == food:
+                    score += 1
+                    w.addch(0, 0, str(score))
+                    food = None
+                    while food is None:
+                        nf = [
+                            random.randint(1, sh-1),
+                            random.randint(1, sw-1)
+                        ]
+                        food = nf if nf not in snake else None
+                    w.addch(food[0], food[1], curses.ACS_PI)
+                else:
+                    tail = snake.pop()
+                    w.addch(tail[0], tail[1], ' ')
+                w.addch(snake[0][0], snake[0][1], curses.ACS_CKBOARD)
+            except curses.error:
+               w.clear()
+               w.addstr(sh//2, sw//2, "GAME OVER")
+               w.nodelay(True)
+               w.getch()
+               #curses.endwin()
+               #quit()
 
 if __name__ == '__main__':
     curses.wrapper(main)
