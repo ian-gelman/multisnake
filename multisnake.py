@@ -34,7 +34,7 @@ def main(screen):
             try:    
                 next_key = w.getch()
                 key = key if next_key == -1 else next_key
-                w.addch(0, 0, str(score))
+                w.addstr(0, 0, str(score))
 
                 if snake[0][0] in [0, sh] or snake[0][1]  in [0, sw] or snake[0] in snake[1:]:
                     raise curses.error
@@ -55,7 +55,7 @@ def main(screen):
 
                 if snake[0] == food:
                     score += 1
-                    w.addch(0, 0, str(score))
+                    w.addstr(0, 0, str(score))
                     food = None
                     while food is None:
                         nf = [
@@ -69,12 +69,15 @@ def main(screen):
                     w.addch(tail[0], tail[1], ' ')
                 w.addch(snake[0][0], snake[0][1], curses.ACS_CKBOARD)
             except curses.error:
-               w.clear()
-               w.addstr(sh//2, sw//2, "GAME OVER")
-               w.nodelay(True)
-               w.getch()
-               #curses.endwin()
-               #quit()
+               curses.endwin()
+               input("GAME OVER: Press [ENTER] to restart")
+               break
+               #w.clear()
+               #w.addstr(sh//2, sw//2, "GAME OVER: Press any key to restart")
+               #char = curses.ERR
+               #char = w.getch()
+               #w.nodelay(True)
+               #if char != curses.ERR: break
 
 if __name__ == '__main__':
     curses.wrapper(main)
