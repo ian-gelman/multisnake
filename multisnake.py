@@ -1,4 +1,10 @@
 #!/usr/bin/env Python3
+'''
+Multisnake:
+    This should be separated, but right now its combined
+    game logic, control, and render.
+
+'''
 
 import random
 import curses
